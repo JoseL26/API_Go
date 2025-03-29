@@ -69,6 +69,11 @@ $ serverless remove
 
 # 📖 Endpoints
 
+| Método | Ruta             | Descripción  |
+| :---:  | :---:            | :---:           |
+| POST   | /login           | Autenticación de usuarios   |
+| POST   | /factorizar-qr   | Procesa códigos QR   |
+
 # 🛠 Variables de Entorno
 Asegúrate de configurar las siguientes variables de entorno antes de ejecutar la API:
 
@@ -77,7 +82,3 @@ export AWS_REGION=us-east-1
 export AWS_ACCESS_KEY_ID=TU_ACCESS_KEY
 export AWS_SECRET_ACCESS_KEY=TU_SECRET_KEY
 ```
-| Método | Ruta             | Descripción  |
-| :---:  | :---:            | :---:           |
-| POST   | /login           | Autenticación de usuarios   |
-| POST   | /factorizar-qr   | Procesa códigos QR   |
