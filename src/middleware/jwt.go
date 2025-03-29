@@ -3,7 +3,7 @@ package middleware
 import (
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v3"
-	"API-Go/utils"
+	"API-Go/src/utils"
 )
 
 func JwtMiddleware() fiber.Handler {

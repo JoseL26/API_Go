@@ -4,7 +4,7 @@ import (
 	"time"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
-	"API-Go/utils"
+	"API-Go/src/utils"
 )
 var secret = utils.GetEnv("JWT_SECRET", "default_secret")
 

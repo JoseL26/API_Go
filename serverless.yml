@@ -1,0 +1,35 @@
+service: matriz-service
+
+provider:
+  name: aws
+  runtime: provided.al2023  # Usa Amazon Linux 2023 con Go 1.20+
+  region: us-east-1
+  memorySize: 128
+  timeout: 10
+  environment:
+    JWT_SECRET: ${ssm:/matriz/jwt-secret}
+
+functions:
+  app:
+    handler: bootstrap  # AWS espera un binario llamado "bootstrap"
+    package:
+      individually: true
+    events:
+      - http:
+          path: /factorizar-qr
+          method: post
+      - http:
+          path: /login
+          method: post
+
+package:
+  patterns:
+    - "!**"
+    - "bootstrap"  # Incluir solo el binario en el paquete
+
+custom:
+  scripts:
+    hooks:
+      before:package:createDeploymentArtifacts:
+        - echo "Compilando binario para AWS Lambda..."
+        - GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bootstrap

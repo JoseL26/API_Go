@@ -2,29 +2,26 @@
 FROM golang:1.24.1 AS builder
 WORKDIR /app
 
-# Copiar archivos de módulos
+# Copiar archivos de módulos y descargar dependencias
 COPY go.mod go.sum ./
-
-# Descargar dependencias antes de copiar el código
-RUN go mod download
+RUN go mod download && go mod tidy
 
 # Copiar el código fuente
-COPY src/ .
+COPY . .
 
-# Verificar módulos y construir la aplicación de forma compatible con Alpine Linux
-RUN go mod tidy
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o app .
+# Construir el binario (con nombre "bootstrap" para AWS Lambda)
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /app/bootstrap .
 
-# Etapa final (más liviana)
+# Etapa final (imagen liviana)
 FROM alpine:latest
 WORKDIR /app
 
-# Copiar binario desde la etapa anterior y asegurarse de que tenga permisos de ejecución
-COPY --from=builder /app/app /app/app
-RUN chmod +x /app/app
+# Copiar el binario compilado
+COPY --from=builder /app/bootstrap /app/bootstrap
+RUN chmod +x /app/bootstrap
 
-# Exponer el puerto
+# Exponer puerto 3000 solo si se ejecuta en Docker
 EXPOSE 3000
 
-# Ejecutar la aplicación
-CMD ["./app"]
+# Si se ejecuta en Lambda, el binario ya es "bootstrap"
+CMD ["./bootstrap"]
